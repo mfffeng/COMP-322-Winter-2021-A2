@@ -31,6 +31,14 @@ class DLLStructure{
         void PrintDLL();
         void InsertAfter(int valueToInsertAfter, int valueToBeInserted);
         void InsertBefore(int valueToInsertAfter, int valueToBeInserted);
+        void Delete(int value);
+        void Sort();
+        bool IsEmpty();
+        int GetHead();
+        int GetTail();
+        int GetSize();
+        int GetMax();
+        int GetMin();
 
     private:
         Node *first;
@@ -40,15 +48,20 @@ class DLLStructure{
 DLLStructure::DLLStructure():first(NULL), last(NULL){}
 
 DLLStructure::DLLStructure(int array[], int size){
-    Node *head = new Node(array[0], NULL, NULL);
-    this -> first = head;
-    Node *lastLoop = head;
-    for (int i = 1; i < size; i++){
-        Node* current = new Node(array[i], NULL, lastLoop);
-        current -> prev -> next = current;
-        lastLoop = current;
+    if (size == 0){     // Initialize an empty list if the array is empty.
+        DLLStructure();
     }
-    this -> last = lastLoop;
+    else{
+        Node *head = new Node(array[0], NULL, NULL);
+        this -> first = head;
+        Node *lastLoop = head;
+        for (int i = 1; i < size; i++){
+            Node* current = new Node(array[i], NULL, lastLoop);
+            lastLoop -> next = current;
+            lastLoop = current;
+        }
+        last = lastLoop;
+    }
 }
 
 DLLStructure::~DLLStructure(){
@@ -60,6 +73,8 @@ DLLStructure::~DLLStructure(){
         nextNode = nextNode -> next;
     }
     delete last;        // The last node can't be deleted in the above loop, as the next node to the last node is NULL.
+    first = NULL;
+    last = NULL;
 }
 
 void DLLStructure::PrintDLL(){
@@ -116,4 +131,62 @@ void DLLStructure::InsertBefore(int valueToInsertAfter, int valueToBeInserted){
         int insertAfterNode = current -> prev -> data;      // Insert after the previous node == Insert before the target node.
         InsertAfter(insertAfterNode, valueToBeInserted);
     }
+}
+
+
+void DLLStructure::Delete(int value){
+    Node *current = first;
+    while (current != NULL){
+        if (current -> data == value){
+            break;
+        }
+        current = current -> next;
+    }
+    if (current != NULL){       // If the value to be deleted is in the list.
+        if (current != last){   // If it's not the last element.
+            current -> prev -> next = current -> next;
+            current -> next -> prev = current -> prev;
+            delete current;
+        }
+        else{   // If it is the last element.
+            current -> prev -> next = NULL;
+            last = current -> prev;
+            delete current;
+        }
+    }
+}
+
+
+void DLLStructure::Sort(){
+    Node *boundary = last;
+    Node *pointer = first;
+    int i = 0;
+    int j = 0;
+    while (boundary -> prev != NULL){       //  A bubble sort here.
+        while (pointer != boundary){
+            if (pointer -> data > pointer -> next -> data){
+                int swap = pointer -> data;
+                pointer -> data = pointer -> next -> data;
+                pointer -> next -> data = swap;
+            }
+            pointer = pointer -> next;
+        }
+        pointer = first;
+        boundary = boundary -> prev;
+    }
+}
+
+
+bool DLLStructure::IsEmpty(){
+    return first == NULL && last == NULL;
+}
+
+
+int DLLStructure::GetHead(){
+    return first -> data;
+}
+
+
+int DLLStructure::GetTail(){
+    return last -> data;
 }
