@@ -85,8 +85,8 @@ void DLLStructure::PrintDLL(){
         cout << current -> data << " ";
         current = current -> next;
     }
-    cout << last -> data << endl;
-}
+    cout << last -> data << endl;   // I leave this last node out of the loop intentionally, to find a place
+}                                   // for the last endl:).
 
 void DLLStructure::InsertAfter(int valueToInsertAfter, int valueToBeInserted){
     bool found = false;
@@ -99,13 +99,13 @@ void DLLStructure::InsertAfter(int valueToInsertAfter, int valueToBeInserted){
         current = current -> next;
     }
     Node *insert = new Node(valueToBeInserted, NULL, NULL);
-    if (found){
+    if (found){     // Target value not found.
         insert -> next = current -> next;
         current -> next -> prev = insert;
         current -> next = insert;
         insert -> prev = current;
     }
-    else{
+    else{           // Target value found.
         last -> next = insert;
         insert -> prev = last;
         last = insert;
@@ -145,7 +145,7 @@ void DLLStructure::Delete(int value){
         current = current -> next;
     }
     if (current != NULL){       // If the value to be deleted is in the list.
-        if (current != last && current != first){   // If it's neitherthe last nor the first element.
+        if (current != last && current != first){   // If it's neither the last nor the first element.
             current -> prev -> next = current -> next;
             current -> next -> prev = current -> prev;
             delete current;
