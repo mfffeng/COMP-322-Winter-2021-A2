@@ -246,7 +246,7 @@ DLLStructure::DLLStructure(DLLStructure& dlls){
 }
 
 
-int main () { 
+int main () {
     // Q 1, 2, 3 should obviously be implemented successfully
     // in order to run the following code
     int array [5] = {11 ,2 ,7 ,22 ,4 };
