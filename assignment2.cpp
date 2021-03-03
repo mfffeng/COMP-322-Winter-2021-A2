@@ -39,6 +39,7 @@ class DLLStructure{
         int GetSize();
         int GetMax();
         int GetMin();
+        DLLStructure(DLLStructure& dlls);
 
     private:
         Node *first;
@@ -49,11 +50,12 @@ DLLStructure::DLLStructure():first(NULL), last(NULL){}
 
 DLLStructure::DLLStructure(int array[], int size){
     if (size == 0){     // Initialize an empty list if the array is empty.
-        DLLStructure();
+        first = NULL;
+        last = NULL;
     }
     else{
         Node *head = new Node(array[0], NULL, NULL);
-        this -> first = head;
+        first = head;
         Node *lastLoop = head;
         for (int i = 1; i < size; i++){
             Node* current = new Node(array[i], NULL, lastLoop);
@@ -65,16 +67,16 @@ DLLStructure::DLLStructure(int array[], int size){
 }
 
 DLLStructure::~DLLStructure(){
-    Node *current = first;
-    Node *nextNode = first -> next;
-    while (nextNode != NULL){
-        delete current;
-        current = nextNode;
-        nextNode = nextNode -> next;
+    if (! (first == NULL && last == NULL)){
+        Node *current = first;
+        Node *nextNode = first -> next;
+        while (nextNode != NULL){
+            delete current;
+            current = nextNode;
+            nextNode = nextNode -> next;
+        }
+        delete last;        // The last node can't be deleted in the above loop, as the next node to the last node is NULL.
     }
-    delete last;        // The last node can't be deleted in the above loop, as the next node to the last node is NULL.
-    first = NULL;
-    last = NULL;
 }
 
 void DLLStructure::PrintDLL(){
@@ -83,7 +85,7 @@ void DLLStructure::PrintDLL(){
         cout << current -> data << " ";
         current = current -> next;
     }
-    cout << last << endl;
+    cout << last -> data << endl;
 }
 
 void DLLStructure::InsertAfter(int valueToInsertAfter, int valueToBeInserted){
@@ -143,14 +145,19 @@ void DLLStructure::Delete(int value){
         current = current -> next;
     }
     if (current != NULL){       // If the value to be deleted is in the list.
-        if (current != last){   // If it's not the last element.
+        if (current != last && current != first){   // If it's neitherthe last nor the first element.
             current -> prev -> next = current -> next;
             current -> next -> prev = current -> prev;
             delete current;
         }
-        else{   // If it is the last element.
+        else if (current == last){   // If it is the last element.
             current -> prev -> next = NULL;
             last = current -> prev;
+            delete current;
+        }
+        else if (current == first){     // If it is the first element.
+            current -> next -> prev = NULL;
+            first = current -> next;
             delete current;
         }
     }
@@ -189,4 +196,105 @@ int DLLStructure::GetHead(){
 
 int DLLStructure::GetTail(){
     return last -> data;
+}
+
+
+int DLLStructure::GetSize(){
+    Node *pointer = first;
+    int size = 0;
+    while (pointer != NULL){
+        size++;
+        pointer = pointer -> next;
+    }
+    return size;
+}
+
+
+int DLLStructure::GetMax(){
+    Sort();
+    return last -> data;
+}
+
+
+int DLLStructure::GetMin(){
+    Sort();
+    return first -> data;
+}
+
+
+DLLStructure::DLLStructure(DLLStructure& dlls){
+    if (dlls.IsEmpty()){
+        first = NULL;
+        last = NULL;
+    }
+    else{
+        Node *pointer = dlls.first;
+        while (pointer != NULL){
+            Node *head = new Node(pointer -> data, NULL, NULL);
+            this -> first = head;
+            Node *lastLoop = head;
+            pointer = pointer -> next;
+            while (pointer != NULL){
+                Node* current = new Node(pointer -> data, NULL, lastLoop);
+                lastLoop -> next = current;
+                lastLoop = current;
+                pointer = pointer -> next;
+            }
+            this -> last = lastLoop;
+        }
+    }
+}
+
+
+int main () { 
+    // Q 1, 2, 3 should obviously be implemented successfully
+    // in order to run the following code
+    int array [5] = {11 ,2 ,7 ,22 ,4 };
+    DLLStructure dll (array, 5) ; // note that 5 is the size of the array
+    dll.PrintDLL(); // the output should be: 11, 2, 7, 22, 4
+    // Q 4
+    dll.InsertAfter(7, 13); // To insert 13 after the first occurence of 7
+    dll.PrintDLL(); // the output should be: 11, 2, 7, 13, 22, 4
+    dll.InsertAfter(25, 7); // To insert 7 after the first occurence of 25
+    dll.PrintDLL(); // the output should be: 11, 2, 7, 13, 22, 4, 7
+    // Q 5
+    dll.InsertBefore(7, 26); // To insert 26 before the first occurence of 7
+    dll.PrintDLL(); // the output should be: 11, 2, 26, 7, 13, 22, 4, 7
+    dll.InsertBefore(19, 12); // To insert 12 before the first occurence of 19
+    dll.PrintDLL(); // the output should be: 12, 11, 2, 26, 7, 13, 22, 4, 7
+    // Q 6
+    dll.Delete(22);
+    dll.PrintDLL(); // the output should be: 12, 11, 2, 26, 7, 13, 4, 7
+    // Q 7
+    dll.Sort();
+    dll.PrintDLL(); // the output should be: 2, 4, 7, 7, 11, 12, 13, 26
+    // Q 8
+    if (dll.IsEmpty()){
+        cout << "The list is empty" << endl;
+    }
+    // Q 9
+    cout << "Head element is: " << dll.GetHead() << endl;
+    cout << "Tail element is: " << dll.GetTail() << endl;
+    // Q 10 theory question
+    cout << "Q10: The best implementation for the size problem is just adding a state in this DLL \n"
+            "class to record the size of the list, and update this state whenever a change \n"
+            "to the size of the list occurs." << endl;
+    // Q 10
+    cout << "Number of elements in the list is: " << dll.GetSize() << endl;
+    // Q 11
+    cout << "Max element is: " << dll.GetMax() << endl;
+    cout << "Min element is: " << dll.GetMin() << endl ;
+    // Q 11 theory question
+    // print to the screen the written answer for the theory question
+    cout << "Q11: The best implementation would be first sort the list in advance, than the max (or min) \n"
+            "value would simply be the data stored in the last (or first) node." << endl;
+    // Q 12 theory question
+    // print to the screen the written answer for the theory question
+    cout << "Q12: The default copy constructor is not reliable, as it only does a shallow copy of the object. \n"
+            "Thus, the copy and the original are still tied together (by their shared memory address), \n"
+            "and one change in one of them would also manifest in the other." << endl;
+    // Q 12
+    DLLStructure dll2 (dll);
+    dll2.PrintDLL(); // the output should be: 2, 4, 7, 7, 11, 12, 13, 26
+    return 0;
 }
