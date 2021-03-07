@@ -46,7 +46,7 @@ class DLLStructure{
         Node *last;
 };
 
-DLLStructure::DLLStructure():first(NULL), last(NULL){}
+DLLStructure::DLLStructure():first(NULL), last(NULL){}      // Initialize an empty list.
 
 DLLStructure::DLLStructure(int array[], int size){
     if (size == 0){     // Initialize an empty list if the array is empty.
@@ -85,8 +85,8 @@ void DLLStructure::PrintDLL(){
         cout << current -> data << " ";
         current = current -> next;
     }
-    cout << last -> data << endl;   // I leave this last node out of the loop intentionally, to find a place
-}                                   // for the last endl:).
+    cout << last -> data << endl;   // I leave this last node out of the loop intentionally, beacuse I don't want to
+}                                   // leave only endl on a cout line:).
 
 void DLLStructure::InsertAfter(int valueToInsertAfter, int valueToBeInserted){
     bool found = false;
@@ -99,13 +99,16 @@ void DLLStructure::InsertAfter(int valueToInsertAfter, int valueToBeInserted){
         current = current -> next;
     }
     Node *insert = new Node(valueToBeInserted, NULL, NULL);
-    if (found){     // Target value not found.
+    if (found){     // Target value found.
         insert -> next = current -> next;
         current -> next -> prev = insert;
         current -> next = insert;
         insert -> prev = current;
+        if (current == last){       // If the target value itself is the "last", update the "last" state. 
+            last = insert;
+        }
     }
-    else{           // Target value found.
+    else{           // Target value not found.
         last -> next = insert;
         insert -> prev = last;
         last = insert;
@@ -130,8 +133,16 @@ void DLLStructure::InsertBefore(int valueToInsertAfter, int valueToBeInserted){
         first = insert;
     }
     else{       // Target value found.
-        int insertAfterNode = current -> prev -> data;      // Insert after the previous node == Insert before the target node.
-        InsertAfter(insertAfterNode, valueToBeInserted);
+        if (current != first){
+            int insertAfterNode = current -> prev -> data;      // Insert after the previous node == Insert before the target node.
+            InsertAfter(insertAfterNode, valueToBeInserted);
+        }
+        else{
+            Node *insert = new Node(valueToBeInserted, NULL, NULL); // The above way of using InsertAfter() doesn't work if the target
+            first -> prev = insert;                                 // value is the "first" and has no previous node.
+            insert -> next = first;
+            first = insert;
+        }
     }
 }
 
@@ -165,6 +176,10 @@ void DLLStructure::Delete(int value){
 
 
 void DLLStructure::Sort(){
+    if (IsEmpty()){
+        cout << "(Empty list!) ";
+        return;
+    }
     Node *boundary = last;
     Node *pointer = first;
     int i = 0;
@@ -190,11 +205,17 @@ bool DLLStructure::IsEmpty(){
 
 
 int DLLStructure::GetHead(){
+    if (IsEmpty()){
+        cout << "(Empty list!) ";
+    }
     return first -> data;
 }
 
 
 int DLLStructure::GetTail(){
+    if (IsEmpty()){
+        cout << "(Empty list!) ";
+    }
     return last -> data;
 }
 
