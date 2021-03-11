@@ -308,7 +308,7 @@ int main () {
     // Q 11 theory question
     // print to the screen the written answer for the theory question
     cout << "Q11: The best implementation would be also add two dedicated fields to the class that record \n"
-            "the max and the min in the list. Whenever an entry is added to or deleted from the lisy \n"
+            "the max and the min in the list. Whenever an entry is added to or deleted from the list, \n"
             "compare the changed value with these two fields to decide if the max and the min field should \n"
             "be update after this operation." << endl; 
     // Q 12 theory question
