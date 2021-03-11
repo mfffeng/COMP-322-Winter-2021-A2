@@ -297,7 +297,7 @@ int main () {
     cout << "Head element is: " << dll.GetHead() << endl;
     cout << "Tail element is: " << dll.GetTail() << endl;
     // Q 10 theory question
-    cout << "Q10: The best implementation for the size problem is just adding a state in this DLL \n"
+    cout << "Q10: The best implementation for the size problem is just adding a field in this DLL \n"
             "class to record the size of the list, and update this state whenever a change \n"
             "to the size of the list occurs." << endl;
     // Q 10
@@ -307,8 +307,10 @@ int main () {
     cout << "Min element is: " << dll.GetMin() << endl ;
     // Q 11 theory question
     // print to the screen the written answer for the theory question
-    cout << "Q11: The best implementation would be first sort the list in advance, than the max (or min) \n"
-            "value would simply be the data stored in the last (or first) node." << endl;
+    cout << "Q11: The best implementation would be also add two dedicated fields to the class that record \n"
+            "the max and the min in the list. Whenever an entry is added to or deleted from the lisy \n"
+            "compare the changed value with these two fields to decide if the max and the min field should \n"
+            "be update after this operation." << endl; 
     // Q 12 theory question
     // print to the screen the written answer for the theory question
     cout << "Q12: The default copy constructor is not reliable, as it only does a shallow copy of the object. \n"
