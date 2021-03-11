@@ -298,7 +298,7 @@ int main () {
     cout << "Tail element is: " << dll.GetTail() << endl;
     // Q 10 theory question
     cout << "Q10: The best implementation for the size problem is just adding a field in this DLL \n"
-            "class to record the size of the list, and update this state whenever a change \n"
+            "class to record the size of the list, and update this field whenever a change \n"
             "to the size of the list occurs." << endl;
     // Q 10
     cout << "Number of elements in the list is: " << dll.GetSize() << endl;
